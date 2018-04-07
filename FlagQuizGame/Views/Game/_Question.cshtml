@@ -1,0 +1,92 @@
+﻿@model FlagQuizGame.Models.Answer
+
+@{
+    var imgSrc = "~/Content/img/" + Model.CorrectAnswerId + ".png";
+    var completePercent = Model.Id * 100 / 10;
+}
+
+<h2>Flag Quiz Game</h2>
+<h3>Question @Model.Id out of 10</h3>
+<div class="row">
+    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+        <div class="progress">
+            <div class="progress-bar" role="progressbar"
+                 style="width:@(Html.AttributeEncode(completePercent))%">
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-6 col-sm-6 col-xs-6">
+        <img src="@Url.Content(imgSrc)" class="img-responsive" alt="flag">
+    </div>
+    <div class="col-md-6 col-lg-6 col-sm-6 col-xs-6">
+        <ul id="question_list" style="list-style-type: none;">
+            @foreach (var option in Model.Options)
+            {
+                <li>
+                    <button id="@option.Id"
+                            type="button"
+                            class="btn btn-primary btn-xl"
+                            onclick="validateAnswer(this.id)">
+                        @option.Country
+                    </button>
+                </li>
+            }
+        </ul>
+        <p>@Html.ActionLink("Next Question" , "Flags", "Game", new { id = Model.Id + 1}, new { style="display:none", id = "nextQuestion", @class = "btn-xl"})</p>
+        <p>@Html.ActionLink("See Results" , "Result", "Game", new { style="display:none", id = "result", @class = "btn-xl"})</p>
+
+
+    </div>
+
+
+</div>
+
+<script>
+
+    let answered = false;
+    const TOTAL_QUESTIONS = 10;
+
+    function validateAnswer(id) {
+
+        if(!answered) {
+            answered = true;
+
+            $.ajax({
+                url: '@Url.Action("ValidateAnswer", "Game")',
+                data: {
+                    answerId: @Model.Id,
+                    optionId: id
+                },
+                type: 'POST'
+            }).done(function (content) {
+                $(`button#${id}`).removeClass("btn-default");
+                if (content.correct) {
+                    $(`button#${id}`).addClass("btn-success");
+                } else {
+                    $(`button#${id}`).addClass("btn-danger");
+                }
+
+
+                if (@Model.Id === 10) {
+                    $("#result").css('display', 'block');
+
+                } else {
+                    $("#nextQuestion").css('display', 'block');
+                }
+
+                
+
+            });
+        }
+    }
+
+
+
+</script>
+
+
+
+
+
+
+

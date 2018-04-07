@@ -1,0 +1,25 @@
+﻿
+@{
+    ViewBag.Title = "Flag Quiz Game";
+}
+@model FlagQuizGame.Models.Game
+
+
+<h2>Flag Quiz Game</h2>
+<h3>Results</h3>
+<div class="row">
+    <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12">
+        @*<div class="progress">
+            <div class="progress-bar" role="progressbar"
+                 style="width:@(Html.AttributeEncode(completePercent))%">
+            </div>
+        </div>*@
+        <h1>You Got @Model.CorrectAnswers out of 10!</h1> <br/>
+        <h1>Total Points: @Model.Points</h1> <br/>
+
+        <p>@Html.ActionLink("Try Again", "Flags", "Game", new { id = 1}, new { @class = "btn-primary btn-lg"})</p>
+
+    </div>
+</div>
+
+
